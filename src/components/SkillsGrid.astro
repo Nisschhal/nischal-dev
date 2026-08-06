@@ -1,0 +1,23 @@
+---
+import { profile } from '../data/profile';
+---
+
+<div class="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+  {
+    profile.skills.map((group, i) => (
+      <section data-reveal data-reveal-delay={i * 50}>
+        <h3 class="text-sm font-bold m-0 mb-3 text-accent">
+          <span aria-hidden="true" class="text-dim font-normal">./</span>
+          {group.group.toLowerCase()}
+        </h3>
+        <ul class="list-none m-0 p-0 flex flex-wrap gap-1.5">
+          {group.items.map((item) => (
+            <li class="text-xs text-dim border border-border px-2 py-1 hover:border-border-hi hover:text-text transition-colors">
+              {item}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>

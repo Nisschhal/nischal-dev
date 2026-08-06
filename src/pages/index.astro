@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import PromptHeading from '../components/PromptHeading.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SkillsGrid from '../components/SkillsGrid.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import { getHomepageProjects, getProjects } from '../lib/projects';
+
+// Data comes from the seam only — never `astro:content` directly.
+// See decisions/0008-data-access-seam.md.
+const featured = await getHomepageProjects(4);
+const total = (await getProjects()).length;
+---
+
+<BaseLayout>
+  <Hero />
+
+  <section class="py-14" aria-labelledby="featured">
+    <PromptHeading
+      command="ls -la projects/ --featured"
+      label="Featured projects"
+      id="featured"
+    />
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      {featured.map((p, i) => <ProjectCard project={p} index={i} />)}
+    </div>
+
+    {
+      total > featured.length && (
+        <p class="mt-6 text-sm m-0">
+          <a href="/projects" class="no-underline hover:underline">
+            → see all {total} projects
+          </a>
+        </p>
+      )
+    }
+  </section>
+
+  <section class="py-14" aria-labelledby="skills">
+    <PromptHeading command="cat skills.txt" label="Skills" id="skills" />
+    <SkillsGrid />
+  </section>
+
+  <ContactBlock />
+</BaseLayout>

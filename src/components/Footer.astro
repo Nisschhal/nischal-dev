@@ -1,0 +1,40 @@
+---
+import { profile } from '../data/profile';
+import { getSyncedAt } from '../lib/projects';
+
+const syncedAt = getSyncedAt();
+const synced =
+  syncedAt && !syncedAt.startsWith('1970')
+    ? new Date(syncedAt).toISOString().slice(0, 10)
+    : null;
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-border mt-24">
+  <div
+    class="max-w-5xl mx-auto px-5 sm:px-8 py-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-xs text-dim"
+  >
+    <p class="m-0">
+      <span class="text-accent">$</span> © {year} {profile.name}
+      {synced && <span class="ml-2 opacity-70">· repo stats synced {synced}</span>}
+    </p>
+
+    <ul class="flex gap-4 list-none m-0 p-0">
+      {
+        profile.socials.map((s) => (
+          <li>
+            <a
+              href={s.url}
+              class="no-underline text-dim hover:text-accent transition-colors"
+              {...(s.url.startsWith('http')
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
+            >
+              {s.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</footer>

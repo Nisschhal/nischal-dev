@@ -1,0 +1,74 @@
+---
+import { profile } from '../data/profile';
+
+/**
+ * The typed line is present in the DOM in full from the start — the animation
+ * only masks it with a clip. That keeps it readable with JS disabled, correct for
+ * screen readers, and instant under `prefers-reduced-motion`.
+ * See decisions/0006-terminal-design-system.md.
+ */
+---
+
+<section class="pt-16 sm:pt-24 pb-14">
+  <p class="text-dim text-sm m-0 mb-4">
+    <span class="text-accent">$</span> whoami
+  </p>
+
+  <h1 class="text-3xl sm:text-5xl font-bold leading-tight m-0 mb-5 tracking-tight">
+    <span class="type-line">{profile.name}</span><span
+      class="cursor-blink"
+      aria-hidden="true"></span>
+  </h1>
+
+  <p class="text-dim text-base sm:text-lg m-0 mb-6">
+    {profile.title}{profile.location && <span> · {profile.location}</span>}
+  </p>
+
+  {
+    profile.availableForWork && (
+      <p class="m-0 mb-8 inline-flex items-center gap-2 border border-accent-dim rounded-sm px-3 py-1 text-xs text-accent">
+        <span class="relative flex h-1.5 w-1.5">
+          <span class="absolute inline-flex h-full w-full rounded-full bg-accent opacity-60 motion-safe:animate-ping" />
+          <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+        </span>
+        available for work
+      </p>
+    )
+  }
+
+  <div class="prose-terminal text-text">
+    {profile.bio.map((para) => <p class="m-0 mb-3 last:mb-0">{para}</p>)}
+  </div>
+
+  <div class="mt-9 flex flex-wrap gap-3 text-sm">
+    <a
+      href="/projects"
+      class="no-underline border border-accent text-accent px-4 py-2 hover:bg-accent hover:text-bg transition-colors"
+    >
+      view projects →
+    </a>
+    <a
+      href={`mailto:${profile.email}`}
+      class="no-underline border border-border text-text px-4 py-2 hover:border-border-hi hover:bg-surface transition-colors"
+    >
+      get in touch
+    </a>
+  </div>
+</section>
+
+<style>
+  /* Reveal the name by animating a clip rather than injecting characters, so the
+     text is always fully present in the DOM. */
+  @media (prefers-reduced-motion: no-preference) {
+    .type-line {
+      display: inline-block;
+      clip-path: inset(0 100% 0 0);
+      animation: type 0.9s steps(24, end) 0.15s forwards;
+    }
+    @keyframes type {
+      to {
+        clip-path: inset(0 0 0 0);
+      }
+    }
+  }
+</style>

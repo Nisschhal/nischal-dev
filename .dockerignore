@@ -1,0 +1,25 @@
+# Keep the build context small and stop local state leaking into the image.
+node_modules
+dist
+.astro
+.git
+.github
+.vscode
+.idea
+
+.env
+.env.*
+!.env.example
+
+# Docs and infra are not needed by the build.
+decisions
+tasks.md
+README.md
+CLAUDE.md
+AGENTS.md
+docker-compose*.yml
+
+npm-debug.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db

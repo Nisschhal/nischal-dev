@@ -1,0 +1,109 @@
+---
+import type { Project } from '../lib/projects';
+
+interface Props {
+  project: Project;
+  /** Index used to stagger the scroll reveal. */
+  index?: number;
+}
+
+const { project: p, index = 0 } = Astro.props;
+
+const statusLabel = { live: 'live', wip: 'wip', archived: 'archived' } as const;
+const statusClass = {
+  live: 'text-accent border-accent-dim',
+  wip: 'text-warn border-warn/40',
+  archived: 'text-dim border-border',
+} as const;
+
+// Every repo on the account has ~0 stars, so a row of "★ 0" would be noise.
+// Show the count only when there's something to show.
+const showStars = (p.stats?.stars ?? 0) > 0;
+const pushed = p.stats?.pushedAt
+  ? new Date(p.stats.pushedAt).toISOString().slice(0, 7)
+  : null;
+---
+
+<article
+  data-reveal
+  data-reveal-delay={index * 60}
+  data-stack={p.stack.join('|')}
+  class="group relative flex flex-col border border-border bg-surface/40 p-5 transition-colors hover:border-border-hi hover:bg-surface focus-within:border-accent"
+>
+  <div class="flex items-start justify-between gap-3 mb-2">
+    <h3 class="text-base font-bold m-0 leading-snug">
+      <span aria-hidden="true" class="text-dim font-normal mr-1.5 text-xs"
+        >drwx</span
+      >
+      <a
+        href={`/projects/${p.slug}`}
+        class="no-underline text-text group-hover:text-accent transition-colors after:absolute after:inset-0 after:content-['']"
+      >
+        {p.title}
+      </a>
+    </h3>
+
+    <span
+      class:list={[
+        'shrink-0 border px-1.5 py-0.5 text-[10px] uppercase tracking-wider',
+        statusClass[p.status],
+      ]}
+    >
+      {statusLabel[p.status]}
+    </span>
+  </div>
+
+  <p class="text-sm text-dim m-0 mb-4 grow">{p.summary}</p>
+
+  <ul class="flex flex-wrap gap-1.5 list-none m-0 p-0 mb-4">
+    {
+      p.stack.slice(0, 5).map((tag) => (
+        <li class="text-[11px] text-dim border border-border px-1.5 py-0.5">
+          {tag}
+        </li>
+      ))
+    }
+    {
+      p.stack.length > 5 && (
+        <li class="text-[11px] text-dim px-1 py-0.5">+{p.stack.length - 5}</li>
+      )
+    }
+  </ul>
+
+  <div
+    class="flex items-center justify-between gap-3 text-[11px] text-dim border-t border-border pt-3 mt-auto"
+  >
+    <span class="flex items-center gap-3">
+      {p.stats?.language && <span>{p.stats.language}</span>}
+      {showStars && <span>★ {p.stats!.stars}</span>}
+      <span>{pushed ?? p.year}</span>
+    </span>
+
+    <span class="flex items-center gap-3 relative z-10">
+      {
+        p.liveUrl && (
+          <a
+            href={p.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="no-underline hover:text-accent transition-colors"
+          >
+            live ↗
+          </a>
+        )
+      }
+      {
+        p.repoUrl && (
+          <a
+            href={p.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="no-underline hover:text-accent transition-colors"
+          >
+            code ↗
+          </a>
+        )
+      }
+    </span>
+  </div>
+</article>

@@ -1,0 +1,78 @@
+# ═══════════════════════════════════════════════════════════════════════════
+#  PHASE 2 OVERLAY — NOT ACTIVE YET
+#
+#  Everything here is commented out on purpose. It exists so the growth path is
+#  visible in the repo rather than living only in someone's head.
+#  See decisions/0007-phase-boundaries.md
+#
+#  To activate, when Phase 2 starts:
+#    1. Uncomment the services below
+#    2. Uncomment the `location /api/` block in docker/nginx.conf
+#    3. Add @astrojs/node and set output:'server' in astro.config.mjs
+#    4. docker compose -f docker-compose.yml -f docker-compose.phase2.yml up --build
+# ═══════════════════════════════════════════════════════════════════════════
+
+# NOTE: `services:` is commented out along with everything under it. A YAML key
+# with nothing but comments beneath it parses as null, which compose rejects —
+# so the whole block stays commented until Phase 2 turns it on.
+#
+# services:
+  # The Astro SSR server. Nginx reverse-proxies /api/ to it; static assets keep
+  # being served directly by Nginx, which is what it's good at.
+  #
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/Dockerfile.api
+  #   container_name: portfolio-api
+  #   restart: unless-stopped
+  #   environment:
+  #     NODE_ENV: production
+  #     HOST: 0.0.0.0
+  #     PORT: 4321
+  #     DATABASE_URL: postgres://portfolio:${POSTGRES_PASSWORD:?}@db:5432/portfolio
+  #     SESSION_SECRET: ${SESSION_SECRET:?}
+  #     GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   networks: [portfolio]
+
+  # db:
+  #   image: postgres:17-alpine
+  #   container_name: portfolio-db
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_DB: portfolio
+  #     POSTGRES_USER: portfolio
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ['CMD-SHELL', 'pg_isready -U portfolio -d portfolio']
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   # Deliberately NOT published to the host — only the api service needs it.
+  #   networks: [portfolio]
+
+  # Promotes scripts/sync-github.ts to a scheduled job writing to the database.
+  # It imports the same fetchRepoStats() the CLI uses — see
+  # decisions/0003-committed-github-cache.md.
+  #
+  # sync:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/Dockerfile.api
+  #   command: ['node', 'scripts/sync-cron.js']
+  #   restart: unless-stopped
+  #   environment:
+  #     DATABASE_URL: postgres://portfolio:${POSTGRES_PASSWORD:?}@db:5432/portfolio
+  #     GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   networks: [portfolio]
+
+# volumes:
+#   pgdata:

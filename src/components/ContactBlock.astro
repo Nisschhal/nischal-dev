@@ -1,0 +1,49 @@
+---
+import { profile } from '../data/profile';
+import PromptHeading from './PromptHeading.astro';
+
+/**
+ * PHASE 2 SEAM — decisions/0007-phase-boundaries.md
+ *
+ * Phase 1 is a mailto link plus social links: no server, nothing to break.
+ * Phase 2 replaces the block below with a real form posting to /api/contact,
+ * validated against `contactMessageSchema` in src/lib/schemas.ts (already
+ * written). The social links stay as a fallback either way.
+ */
+---
+
+<section class="py-14" aria-labelledby="contact">
+  <PromptHeading command="mail -s 'hello'" label="Contact" id="contact" />
+
+  <p class="text-dim m-0 mb-6 max-w-[60ch]">
+    Open to full-stack work and interesting problems. The fastest way to reach me
+    is email — I read everything.
+  </p>
+
+  <a
+    href={`mailto:${profile.email}`}
+    class="inline-block no-underline border border-accent text-accent px-4 py-2 text-sm hover:bg-accent hover:text-bg transition-colors"
+  >
+    {profile.email} →
+  </a>
+
+  <ul class="flex flex-wrap gap-x-6 gap-y-2 list-none m-0 mt-8 p-0 text-sm">
+    {
+      profile.socials
+        .filter((s) => s.label !== 'Email')
+        .map((s) => (
+          <li>
+            <span class="text-dim">{s.label.toLowerCase()}:</span>{' '}
+            <a
+              href={s.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="no-underline hover:underline"
+            >
+              {s.handle}
+            </a>
+          </li>
+        ))
+    }
+  </ul>
+</section>

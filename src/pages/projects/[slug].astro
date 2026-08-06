@@ -1,0 +1,170 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCaseStudyProjects, getProjectEntry } from '../../lib/projects';
+import type { GetStaticPaths } from 'astro';
+
+// Featured and client tiers get case-study pages. Archive entries have no body
+// to render, so generating pages for them would ship ~19 near-empty pages and
+// dilute the sitemap — they link straight out instead. Client projects arrive
+// here with their repo fields already stripped. See decisions/0010 and 0011.
+export const getStaticPaths = (async () => {
+  const projects = await getCaseStudyProjects();
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}) satisfies GetStaticPaths;
+
+const { project: p } = Astro.props;
+
+// The one deliberate exception to the seam: render() is bound to the content
+// entry. Phase 2 swaps this for server-rendered HTML from the DB and only this
+// file changes. See decisions/0008-data-access-seam.md.
+const entry = await getProjectEntry(p.slug);
+const { Content } = entry
+  ? await render(entry)
+  : { Content: null as unknown as never };
+
+const pushed = p.stats?.pushedAt
+  ? new Date(p.stats.pushedAt).toISOString().slice(0, 10)
+  : null;
+---
+
+<BaseLayout title={p.title} description={p.summary}>
+  <div class="pt-12 pb-8">
+    <p class="text-sm m-0 mb-8">
+      <a href="/projects" class="no-underline hover:underline">
+        <span aria-hidden="true">cd ../</span><span class="sr-only"
+          >Back to all projects</span
+        >
+      </a>
+    </p>
+
+    <header class="mb-10">
+      <div class="flex items-center gap-3 mb-3 text-xs">
+        <span
+          class:list={[
+            'border px-1.5 py-0.5 uppercase tracking-wider',
+            p.status === 'live'
+              ? 'text-accent border-accent-dim'
+              : p.status === 'wip'
+                ? 'text-warn border-warn/40'
+                : 'text-dim border-border',
+          ]}
+        >
+          {p.status}
+        </span>
+        <span class="text-dim">{p.year}</span>
+        {p.stats?.language && <span class="text-dim">{p.stats.language}</span>}
+        {(p.stats?.stars ?? 0) > 0 && (
+          <span class="text-dim">★ {p.stats!.stars}</span>
+        )}
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl font-bold m-0 mb-4 tracking-tight">
+        {p.title}
+      </h1>
+
+      <p class="text-dim m-0 mb-6 max-w-[65ch] text-base">{p.summary}</p>
+
+      <ul class="flex flex-wrap gap-1.5 list-none m-0 p-0 mb-6">
+        {
+          p.stack.map((tag) => (
+            <li class="text-[11px] text-dim border border-border px-2 py-1">
+              {tag}
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="flex flex-wrap gap-3 text-sm">
+        {
+          p.liveUrl && (
+            <a
+              href={p.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="no-underline border border-accent text-accent px-3 py-1.5 hover:bg-accent hover:text-bg transition-colors"
+            >
+              live demo ↗
+            </a>
+          )
+        }
+        {
+          p.repoUrl && (
+            <a
+              href={p.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="no-underline border border-border text-text px-3 py-1.5 hover:border-border-hi hover:bg-surface transition-colors"
+            >
+              source ↗
+            </a>
+          )
+        }
+        {
+          p.extraRepos.map((r) => (
+            <a
+              href={r.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="no-underline border border-border text-text px-3 py-1.5 hover:border-border-hi hover:bg-surface transition-colors"
+            >
+              {r.label.toLowerCase()} ↗
+            </a>
+          ))
+        }
+      </div>
+    </header>
+
+    {
+      p.highlights.length > 0 && (
+        <aside class="border border-border bg-surface/40 p-5 mb-10">
+          <h2 class="text-sm font-bold m-0 mb-3 text-accent">
+            <span aria-hidden="true" class="text-dim font-normal">## </span>
+            highlights
+          </h2>
+          <ul class="list-none m-0 p-0 pl-4 text-sm">
+            {p.highlights.map((h) => (
+              <li class="relative mb-1.5 last:mb-0">
+                <span
+                  aria-hidden="true"
+                  class="absolute -left-4 text-accent"
+                >
+                  ▸
+                </span>
+                {h}
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )
+    }
+
+    {
+      p.cover && (
+        <img
+          src={p.cover}
+          alt={`Screenshot of ${p.title}`}
+          loading="lazy"
+          decoding="async"
+          class="w-full border border-border mb-10"
+        />
+      )
+    }
+
+    <div class="prose-terminal">
+      {Content && <Content />}
+    </div>
+
+    {
+      pushed && (
+        <p class="text-xs text-dim mt-12 pt-6 border-t border-border m-0">
+          <span class="text-accent">$</span> git log -1 --format=%cd →{' '}
+          <time datetime={pushed}>{pushed}</time>
+        </p>
+      )
+    }
+  </div>
+</BaseLayout>

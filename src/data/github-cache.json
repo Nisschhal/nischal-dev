@@ -1,0 +1,295 @@
+{
+  "syncedAt": "2026-08-06T09:13:38.500Z",
+  "repos": {
+    "Nisschhal/advanced-auth-nextjs-node": {
+      "repo": "Nisschhal/advanced-auth-nextjs-node",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": null,
+      "pushedAt": "2026-02-25T09:13:05Z",
+      "archived": false
+    },
+    "Nisschhal/ai-chat-app-backend": {
+      "repo": "Nisschhal/ai-chat-app-backend",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": null,
+      "pushedAt": "2026-05-29T04:39:03Z",
+      "archived": false
+    },
+    "Nisschhal/ai-chat-app-frontent": {
+      "repo": "Nisschhal/ai-chat-app-frontent",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": null,
+      "pushedAt": "2026-05-29T04:59:18Z",
+      "archived": false
+    },
+    "Nisschhal/ai-chatbot": {
+      "repo": "Nisschhal/ai-chatbot",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": null,
+      "pushedAt": "2025-08-03T05:42:08Z",
+      "archived": false
+    },
+    "Nisschhal/ai-e-com": {
+      "repo": "Nisschhal/ai-e-com",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": "https://ai-e-com.vercel.app",
+      "pushedAt": "2026-02-09T06:37:58Z",
+      "archived": false
+    },
+    "Nisschhal/ai-multi-vendor-store": {
+      "repo": "Nisschhal/ai-multi-vendor-store",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": "https://ai-multi-vendor-store.vercel.app",
+      "pushedAt": "2026-01-20T15:52:58Z",
+      "archived": false
+    },
+    "Nisschhal/book-wiz": {
+      "repo": "Nisschhal/book-wiz",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": "https://uni-book-wiz.vercel.app",
+      "pushedAt": "2025-01-26T02:54:28Z",
+      "archived": false
+    },
+    "Nisschhal/calendly-clone-meetly": {
+      "repo": "Nisschhal/calendly-clone-meetly",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": null,
+      "pushedAt": "2025-08-11T08:45:44Z",
+      "archived": false
+    },
+    "Nisschhal/carhive": {
+      "repo": "Nisschhal/carhive",
+      "stars": 0,
+      "forks": 0,
+      "language": "JavaScript",
+      "topics": [],
+      "homepage": "https://carhive-dev-nischal.vercel.app",
+      "pushedAt": "2024-10-15T02:15:33Z",
+      "archived": false
+    },
+    "Nisschhal/class-scheduler-back": {
+      "repo": "Nisschhal/class-scheduler-back",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": null,
+      "pushedAt": "2026-02-13T06:34:09Z",
+      "archived": false
+    },
+    "Nisschhal/class-scheduler-front": {
+      "repo": "Nisschhal/class-scheduler-front",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": "https://class-scheduler-front.vercel.app",
+      "pushedAt": "2026-02-13T05:27:49Z",
+      "archived": false
+    },
+    "Nisschhal/digital-garden": {
+      "repo": "Nisschhal/digital-garden",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": "https://digital-garden-flame-nu.vercel.app",
+      "pushedAt": "2026-08-01T14:46:02Z",
+      "archived": false
+    },
+    "Nisschhal/e-com-nest-fullstack": {
+      "repo": "Nisschhal/e-com-nest-fullstack",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": null,
+      "pushedAt": "2026-01-28T08:01:15Z",
+      "archived": false
+    },
+    "Nisschhal/first-ai-chatbot": {
+      "repo": "Nisschhal/first-ai-chatbot",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": null,
+      "pushedAt": "2025-07-06T10:17:05Z",
+      "archived": false
+    },
+    "Nisschhal/ink-sprout-v2": {
+      "repo": "Nisschhal/ink-sprout-v2",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": "https://ink-sprout--drab.vercel.app",
+      "pushedAt": "2026-01-21T06:18:54Z",
+      "archived": false
+    },
+    "Nisschhal/loopstudios-tailwind": {
+      "repo": "Nisschhal/loopstudios-tailwind",
+      "stars": 0,
+      "forks": 0,
+      "language": "CSS",
+      "topics": [],
+      "homepage": "https://loopstudios-tailwind-snowy.vercel.app",
+      "pushedAt": "2023-03-15T12:31:11Z",
+      "archived": false
+    },
+    "Nisschhal/mac-landing-gsap-3js": {
+      "repo": "Nisschhal/mac-landing-gsap-3js",
+      "stars": 0,
+      "forks": 0,
+      "language": "JavaScript",
+      "topics": [],
+      "homepage": "https://mac-landing-gsap-3js.vercel.app",
+      "pushedAt": "2025-10-13T09:08:37Z",
+      "archived": false
+    },
+    "Nisschhal/mern-chatty": {
+      "repo": "Nisschhal/mern-chatty",
+      "stars": 0,
+      "forks": 0,
+      "language": "JavaScript",
+      "topics": [],
+      "homepage": null,
+      "pushedAt": "2025-10-09T14:34:06Z",
+      "archived": false
+    },
+    "Nisschhal/next-auth": {
+      "repo": "Nisschhal/next-auth",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": "https://next-auth-rho-mocha.vercel.app",
+      "pushedAt": "2025-01-11T10:24:14Z",
+      "archived": false
+    },
+    "Nisschhal/nisal-portfolio": {
+      "repo": "Nisschhal/nisal-portfolio",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": "https://nischal-portfolio-mu.vercel.app",
+      "pushedAt": "2025-05-28T10:49:27Z",
+      "archived": false
+    },
+    "Nisschhal/nischal-lms": {
+      "repo": "Nisschhal/nischal-lms",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": null,
+      "pushedAt": "2025-09-01T04:33:33Z",
+      "archived": false
+    },
+    "Nisschhal/portfolio-v2": {
+      "repo": "Nisschhal/portfolio-v2",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": "https://nischaldev.vercel.app",
+      "pushedAt": "2026-02-10T06:55:09Z",
+      "archived": false
+    },
+    "Nisschhal/real-state-gharedi": {
+      "repo": "Nisschhal/real-state-gharedi",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": "https://real-state-gharedi.vercel.app",
+      "pushedAt": "2026-02-17T08:05:40Z",
+      "archived": false
+    },
+    "Nisschhal/sage-dev-craft": {
+      "repo": "Nisschhal/sage-dev-craft",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": "https://sage-dev-craft.vercel.app",
+      "pushedAt": "2025-01-13T05:27:48Z",
+      "archived": false
+    },
+    "Nisschhal/sole-mate": {
+      "repo": "Nisschhal/sole-mate",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": "https://sole-mate-dev-nisal.vercel.app",
+      "pushedAt": "2024-11-09T03:53:22Z",
+      "archived": false
+    },
+    "Nisschhal/syplt-clone-gsap": {
+      "repo": "Nisschhal/syplt-clone-gsap",
+      "stars": 0,
+      "forks": 0,
+      "language": "JavaScript",
+      "topics": [],
+      "homepage": "https://syplt-clone-gsap.vercel.app",
+      "pushedAt": "2025-08-11T12:13:56Z",
+      "archived": false
+    },
+    "Nisschhal/tailSprout": {
+      "repo": "Nisschhal/tailSprout",
+      "stars": 0,
+      "forks": 0,
+      "language": "CSS",
+      "topics": [],
+      "homepage": "https://tail-sprout-nisal-dev.vercel.app",
+      "pushedAt": "2025-01-01T07:51:14Z",
+      "archived": false
+    },
+    "Nisschhal/todo-with-docker": {
+      "repo": "Nisschhal/todo-with-docker",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "topics": [],
+      "homepage": null,
+      "pushedAt": "2026-02-09T10:50:36Z",
+      "archived": false
+    },
+    "Nisschhal/zentry-game": {
+      "repo": "Nisschhal/zentry-game",
+      "stars": 0,
+      "forks": 0,
+      "language": "JavaScript",
+      "topics": [],
+      "homepage": "https://zentry-game-three.vercel.app",
+      "pushedAt": "2025-07-21T02:39:44Z",
+      "archived": false
+    }
+  }
+}

@@ -1,0 +1,26 @@
+---
+# ═══════════════════════════════════════════════════════════════════════════
+#  TEMPLATE for private / client work — see decisions/0010
+#
+#  Copy to a real filename (e.g. `acme-dashboard.md`) to use it. The `.example`
+#  extension keeps this file out of the content collection, so it never builds.
+#
+#  THE POINT: there is NO `repo:` field. That single omission means
+#    · GitHub is never queried for this project
+#    · no "source" button renders — only "live demo"
+#    · nothing about a private repository is fetched, cached, or published
+#
+#  BEFORE YOU PUBLISH ONE OF THESE: confirm the client permits being named and
+#  their work shown. That is a contractual question, not a technical one, and
+#  the code cannot check it for you. If you are unsure, describe the work
+#  without naming the client — drop `live:` too and keep it generic.
+# ═══════════════════════════════════════════════════════════════════════════
+title: Client Project Name
+summary: One or two sentences describing what you built and the problem it solved. Your words, no repo link.
+stack: [Next.js, TypeScript, Postgres]
+live: https://the-client-site.com
+tier: archive
+year: 2026
+status: live
+note: client work
+---

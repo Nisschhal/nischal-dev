@@ -1,0 +1,35 @@
+---
+/**
+ * Section heading styled as a shell command.
+ *
+ *   ~/nischal $ ls projects/
+ *   ─────────────────────────────────────────
+ *
+ * The command text is decorative; `label` carries the real heading for
+ * assistive tech, so screen readers hear "Projects", not "ls projects slash".
+ */
+interface Props {
+  /** The fake command, e.g. "ls projects/" */
+  command: string;
+  /** Real heading text for assistive technology. */
+  label: string;
+  as?: 'h1' | 'h2' | 'h3';
+  id?: string;
+}
+
+const { command, label, as: Tag = 'h2', id } = Astro.props;
+---
+
+<div class="mb-6" id={id}>
+  <Tag class="text-base font-bold m-0 flex items-baseline gap-2 flex-wrap">
+    <span class="sr-only">{label}</span>
+    <span aria-hidden="true" class="text-dim">~/nischal</span>
+    <span aria-hidden="true" class="text-accent">$</span>
+    <span aria-hidden="true" class="text-text">{command}</span>
+  </Tag>
+  <div
+    aria-hidden="true"
+    class="mt-2 h-px bg-linear-to-r from-border via-border to-transparent"
+  >
+  </div>
+</div>

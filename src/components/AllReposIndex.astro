@@ -1,0 +1,87 @@
+---
+import type { RepoIndexEntry } from '../lib/github';
+
+interface Props {
+  repos: RepoIndexEntry[];
+}
+
+const { repos } = Astro.props;
+
+// Collapsed by default on purpose (decisions/0011): full transparency without
+// letting `ts-practice` sit at the same visual weight as client work.
+const byYear = new Map<number, RepoIndexEntry[]>();
+for (const r of repos) {
+  const y = r.year || 0;
+  if (!byYear.has(y)) byYear.set(y, []);
+  byYear.get(y)!.push(r);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+---
+
+<details class="mt-16 border-t border-border pt-8 group">
+  <summary
+    class="cursor-pointer list-none text-sm font-bold select-none marker:content-none"
+  >
+    {/* Explicit spacing: Astro collapses the whitespace between sibling elements
+        written on separate lines, which rendered this as "~/nischal$ls". */}
+    <span aria-hidden="true" class="text-dim font-normal">~/nischal</span>{' '}
+    <span aria-hidden="true" class="text-accent">$</span>{' '}
+    <span class="text-text">ls ~/github --all</span>
+    <span class="text-dim font-normal ml-2 text-xs">
+      # {repos.length} public repos
+      <span class="ml-1 inline-block group-open:hidden">▸</span>
+      <span class="ml-1 hidden group-open:inline-block">▾</span>
+    </span>
+  </summary>
+
+  <p class="text-dim text-xs mt-4 mb-6 max-w-[70ch]">
+    Every public repository on the account, generated automatically — experiments,
+    tutorials, and coursework included. The curated sections above are the work
+    worth reading. Private and client repositories are not listed here.
+  </p>
+
+  {
+    years.map((year) => (
+      <section class="mb-6">
+        <h3 class="text-xs text-accent font-bold m-0 mb-2">
+          {year === 0 ? 'undated' : year}
+          <span class="text-dim font-normal ml-2">
+            ({byYear.get(year)!.length})
+          </span>
+        </h3>
+        <ul class="list-none m-0 p-0 grid gap-x-6 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+          {byYear.get(year)!.map((r) => (
+            <li class="text-xs min-w-0 flex items-baseline gap-2">
+              <a
+                href={r.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="no-underline text-dim hover:text-accent transition-colors truncate"
+              >
+                {r.name}
+              </a>
+              {r.language && (
+                <span class="text-border-hi shrink-0 text-[10px]">
+                  {r.language}
+                </span>
+              )}
+              {r.fork && (
+                <span class="text-border-hi shrink-0 text-[10px]">fork</span>
+              )}
+              {r.archived && (
+                <span class="text-border-hi shrink-0 text-[10px]">archived</span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</details>
+
+<style>
+  /* Safari still renders the default disclosure triangle without this. */
+  summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

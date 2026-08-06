@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PromptHeading from '../components/PromptHeading.astro';
+import SkillsGrid from '../components/SkillsGrid.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import { profile } from '../data/profile';
+---
+
+<BaseLayout title="About" description={profile.tagline}>
+  <div class="pt-12">
+    <PromptHeading command="cat about.md" label="About" as="h1" />
+
+    <div class="prose-terminal text-text mb-4">
+      {profile.bio.map((para) => <p class="m-0 mb-4 last:mb-0">{para}</p>)}
+    </div>
+
+    <dl class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm mt-10 mb-4">
+      <dt class="text-dim">location</dt>
+      <dd class="m-0">{profile.location}</dd>
+      <dt class="text-dim">email</dt>
+      <dd class="m-0">
+        <a href={`mailto:${profile.email}`} class="no-underline hover:underline">
+          {profile.email}
+        </a>
+      </dd>
+      <dt class="text-dim">github</dt>
+      <dd class="m-0">
+        <a
+          href={`https://github.com/${profile.handle}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="no-underline hover:underline"
+        >
+          @{profile.handle}
+        </a>
+      </dd>
+      <dt class="text-dim">status</dt>
+      <dd class="m-0">
+        {profile.availableForWork ? 'available for work' : 'not currently looking'}
+      </dd>
+    </dl>
+
+    <section class="py-14" aria-labelledby="skills">
+      <PromptHeading command="cat skills.txt" label="Skills" id="skills" />
+      <SkillsGrid />
+    </section>
+
+    <ContactBlock />
+  </div>
+</BaseLayout>

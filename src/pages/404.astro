@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404 — command not found" bare description="Page not found.">
+  <div class="pt-24 pb-24">
+    <p class="text-sm text-dim m-0 mb-2">
+      <span class="text-accent">~/nischal $</span>
+      <span data-path>cd .</span>
+    </p>
+
+    <h1 class="text-xl font-bold m-0 mb-1 text-danger">
+      bash: no such file or directory
+    </h1>
+    <p class="text-dim m-0 mb-10 text-sm">exit status 404</p>
+
+    <p class="text-sm text-dim m-0 mb-3">
+      <span class="text-accent">~/nischal $</span> ls
+    </p>
+    <ul class="list-none m-0 p-0 text-sm flex flex-col gap-1.5">
+      <li>
+        <a href="/" class="no-underline hover:underline">home/</a>
+      </li>
+      <li>
+        <a href="/projects" class="no-underline hover:underline">projects/</a>
+      </li>
+      <li>
+        <a href="/about" class="no-underline hover:underline">about/</a>
+      </li>
+      <li>
+        <a href="/cv" class="no-underline hover:underline">cv/</a>
+      </li>
+    </ul>
+
+    <p class="text-sm text-dim mt-10 m-0">
+      <span class="text-accent">~/nischal $</span>
+      <span class="cursor-blink" aria-hidden="true"></span>
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  // Echo the path the visitor actually tried, so the error reads as a real shell
+  // session rather than a static joke.
+  const el = document.querySelector<HTMLElement>('[data-path]');
+  if (el) el.textContent = `cd ${location.pathname}`;
+</script>

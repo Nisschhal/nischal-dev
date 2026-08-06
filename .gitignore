@@ -1,0 +1,63 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Secrets — nothing in this block may ever be committed.
+#  .env holds a GitHub PAT and an ngrok authtoken. .env.example is the template
+#  and is deliberately tracked.
+# ─────────────────────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json
+credentials.json
+.netrc
+
+# ─── Dependencies ────────────────────────────────────────────────────────────
+node_modules/
+.pnpm-store/
+
+# ─── Build output & generated types ──────────────────────────────────────────
+dist/
+.astro/
+.output/
+.vercel/
+.netlify/
+*.tsbuildinfo
+
+# ─── Caches ──────────────────────────────────────────────────────────────────
+.cache/
+.turbo/
+.eslintcache
+.parcel-cache/
+coverage/
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ─── Claude Code local state ─────────────────────────────────────────────────
+# The agent definition, the review hook, and settings.json ARE tracked — they
+# are part of the project. Only generated review output is local.
+.claude/reviews/
+.claude/settings.local.json
+
+# ─── OS cruft ────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ─── Editors ─────────────────────────────────────────────────────────────────
+.idea/
+*.swp
+*.swo
+*~

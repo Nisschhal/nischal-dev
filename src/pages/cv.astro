@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PromptHeading from '../components/PromptHeading.astro';
+import { profile } from '../data/profile';
+
+const fmt = (d: string) =>
+  d === 'present'
+    ? 'present'
+    : new Date(`${d}-01`).toLocaleDateString('en', {
+        month: 'short',
+        year: 'numeric',
+      });
+---
+
+<BaseLayout title="CV" description={`Experience and education — ${profile.name}.`}>
+  <div class="pt-12">
+    <PromptHeading command="cat cv.md" label="Curriculum vitae" as="h1" />
+
+    <div class="flex items-center gap-3 mb-12 flex-wrap">
+      {
+        profile.resumeAvailable ? (
+          <a
+            href={profile.resumePath}
+            download
+            class="no-underline border border-accent text-accent px-4 py-2 text-sm hover:bg-accent hover:text-bg transition-colors"
+          >
+            download pdf ↓
+          </a>
+        ) : (
+          /* No dead download link: until public/resume.pdf exists (P1-22) this
+             renders as a disabled control rather than a 404. */
+          <span
+            class="border border-border text-dim px-4 py-2 text-sm cursor-not-allowed"
+            aria-disabled="true"
+            title="PDF not uploaded yet"
+          >
+            pdf not available yet
+          </span>
+        )
+      }
+      <a
+        href={`mailto:${profile.email}`}
+        class="no-underline border border-border text-text px-4 py-2 text-sm hover:border-border-hi hover:bg-surface transition-colors"
+      >
+        request a copy
+      </a>
+    </div>
+
+    <section class="mb-14" aria-labelledby="experience">
+      <h2 id="experience" class="text-sm font-bold text-accent m-0 mb-6">
+        <span aria-hidden="true" class="text-dim font-normal">## </span>experience
+      </h2>
+
+      <ol class="list-none m-0 p-0">
+        {
+          profile.experience.map((job) => (
+            <li class="relative border-l border-border pl-6 pb-8 last:pb-0">
+              <span
+                aria-hidden="true"
+                class="absolute -left-[4.5px] top-1.5 h-2 w-2 bg-accent"
+              />
+              <p class="text-xs text-dim m-0 mb-1">
+                {fmt(job.from)} — {fmt(job.to)}
+                {job.location && <span> · {job.location}</span>}
+              </p>
+              <h3 class="text-base font-bold m-0">{job.role}</h3>
+              <p class="text-sm text-dim m-0 mb-3">{job.org}</p>
+              <ul class="list-none m-0 p-0 pl-4 text-sm">
+                {job.points.map((pt) => (
+                  <li class="relative mb-1.5">
+                    <span aria-hidden="true" class="absolute -left-4 text-accent">
+                      ▸
+                    </span>
+                    {pt}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="mb-14" aria-labelledby="education">
+      <h2 id="education" class="text-sm font-bold text-accent m-0 mb-6">
+        <span aria-hidden="true" class="text-dim font-normal">## </span>education
+      </h2>
+
+      <ol class="list-none m-0 p-0">
+        {
+          profile.education.map((ed) => (
+            <li class="relative border-l border-border pl-6 pb-8 last:pb-0">
+              <span
+                aria-hidden="true"
+                class="absolute -left-[4.5px] top-1.5 h-2 w-2 bg-border-hi"
+              />
+              <p class="text-xs text-dim m-0 mb-1">
+                {ed.from} — {ed.to}
+              </p>
+              <h3 class="text-base font-bold m-0">{ed.qualification}</h3>
+              <p class="text-sm text-dim m-0">{ed.org}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="mb-14" aria-labelledby="cv-skills">
+      <h2 id="cv-skills" class="text-sm font-bold text-accent m-0 mb-6">
+        <span aria-hidden="true" class="text-dim font-normal">## </span>skills
+      </h2>
+      <dl class="grid sm:grid-cols-[10rem_1fr] gap-x-6 gap-y-3 text-sm m-0">
+        {
+          profile.skills.map((g) => (
+            <>
+              <dt class="text-dim">{g.group.toLowerCase()}</dt>
+              <dd class="m-0 mb-3 sm:mb-0">{g.items.join(', ')}</dd>
+            </>
+          ))
+        }
+      </dl>
+    </section>
+  </div>
+</BaseLayout>

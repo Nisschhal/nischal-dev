@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/review-changes.sh",
+            "async": true,
+            "asyncRewake": true,
+            "timeout": 300,
+            "statusMessage": "Reviewing changed files…",
+            "rewakeSummary": "Code review findings"
+          }
+        ]
+      }
+    ]
+  }
+}

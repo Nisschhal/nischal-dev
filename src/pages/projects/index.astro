@@ -1,0 +1,201 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PromptHeading from '../../components/PromptHeading.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import ArchiveRow from '../../components/ArchiveRow.astro';
+import AllReposIndex from '../../components/AllReposIndex.astro';
+import {
+  getFeaturedProjects,
+  getClientProjects,
+  getArchiveProjects,
+  getAllStacks,
+  getAllRepos,
+} from '../../lib/projects';
+
+const featured = await getFeaturedProjects();
+const client = await getClientProjects();
+const archive = await getArchiveProjects();
+const stacks = await getAllStacks();
+const allRepos = await getAllRepos();
+
+const total = featured.length + client.length + archive.length;
+const liveCount = [...featured, ...client, ...archive].filter((p) => p.liveUrl).length;
+---
+
+<BaseLayout
+  title="Projects"
+  description="Selected full-stack projects — e-commerce platforms, AI applications, and interactive frontends."
+>
+  <div class="pt-12">
+    <PromptHeading command="ls -la projects/" label="Projects" as="h1" />
+
+    <p class="text-dim text-sm m-0 mb-8 max-w-[65ch]">
+      {total} projects, {liveCount} with a live demo. Curated rather than pulled from
+      the GitHub API — most of my repos are experiments, and a list of those isn't
+      useful to anyone.
+    </p>
+
+    <!-- Filter. Enhancement only: with JS off, everything stays visible. -->
+    <div class="mb-10" data-filter-root hidden>
+      <p class="text-xs text-dim m-0 mb-2">
+        <span class="text-accent">$</span> grep -l
+      </p>
+      <div
+        class="flex flex-wrap gap-1.5"
+        role="group"
+        aria-label="Filter projects by stack"
+      >
+        <button
+          type="button"
+          data-filter="*"
+          aria-pressed="true"
+          class="filter-btn text-xs border px-2 py-1 transition-colors"
+        >
+          all
+        </button>
+        {
+          stacks.map((tag) => (
+            <button
+              type="button"
+              data-filter={tag}
+              aria-pressed="false"
+              class="filter-btn text-xs border px-2 py-1 transition-colors"
+            >
+              {tag}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <section aria-labelledby="featured-projects" class="mb-16">
+      <h2 id="featured-projects" class="sr-only">Featured projects</h2>
+      <div class="grid gap-4 sm:grid-cols-2" data-project-grid>
+        {featured.map((p, i) => <ProjectCard project={p} index={i} />)}
+      </div>
+      <p class="text-dim text-sm mt-6 hidden" data-empty-featured>
+        <span class="text-accent">$</span> no featured projects match that filter.
+      </p>
+    </section>
+
+    {
+      client.length > 0 && (
+        <section aria-labelledby="client-work" class="mb-16">
+          <PromptHeading
+            command="ls -la clients/"
+            label="Client work"
+            id="client-work"
+          />
+          <p class="text-dim text-sm m-0 mb-4 max-w-[65ch]">
+            Commissioned work, shipped and in production. Source is not published —
+            these repositories belong to the client.
+          </p>
+
+          <ul class="list-none m-0 p-0" data-client-list>
+            {client.map((p) => (
+              <ArchiveRow project={p} />
+            ))}
+          </ul>
+          <p class="text-dim text-sm mt-6 hidden" data-empty-client>
+            <span class="text-accent">$</span> no client work matches that filter.
+          </p>
+        </section>
+      )
+    }
+
+    <section aria-labelledby="archive">
+      <PromptHeading
+        command="ls -la archive/"
+        label="More projects"
+        id="archive"
+      />
+      <p class="text-dim text-sm m-0 mb-4 max-w-[65ch]">
+        Smaller builds and earlier work. Links go straight to the demo or the code.
+      </p>
+
+      <ul class="list-none m-0 p-0" data-archive-list>
+        {archive.map((p) => <ArchiveRow project={p} />)}
+      </ul>
+      <p class="text-dim text-sm mt-6 hidden" data-empty-archive>
+        <span class="text-accent">$</span> nothing in the archive matches that filter.
+      </p>
+    </section>
+
+    <AllReposIndex repos={allRepos} />
+  </div>
+</BaseLayout>
+
+<style>
+  .filter-btn {
+    border-color: var(--color-border);
+    color: var(--color-dim);
+  }
+  .filter-btn:hover {
+    border-color: var(--color-border-hi);
+    color: var(--color-text);
+  }
+  .filter-btn[aria-pressed='true'] {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-filter-root]');
+  const grid = document.querySelector<HTMLElement>('[data-project-grid]');
+  const list = document.querySelector<HTMLElement>('[data-archive-list]');
+
+  if (root && grid && list) {
+    // Only reveal the filter once JS is running, or it renders as dead buttons.
+    root.hidden = false;
+
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('.filter-btn')];
+    const emptyFeatured = document.querySelector<HTMLElement>('[data-empty-featured]');
+    const emptyClient = document.querySelector<HTMLElement>('[data-empty-client]');
+    const emptyArchive = document.querySelector<HTMLElement>('[data-empty-archive]');
+    const clientList = document.querySelector<HTMLElement>('[data-client-list]');
+
+    // The filter spans all three curated sections — a stack tag that only appears
+    // in the archive must still narrow the page rather than appearing to do
+    // nothing. The all-repos appendix is deliberately excluded: it is an index,
+    // not a showcase, and has no stack data.
+    const cards = [...grid.querySelectorAll<HTMLElement>('[data-stack]')];
+    const clientRows = clientList
+      ? [...clientList.querySelectorAll<HTMLElement>('[data-stack]')]
+      : [];
+    const rows = [...list.querySelectorAll<HTMLElement>('[data-stack]')];
+
+    const applyTo = (els: HTMLElement[], filter: string) => {
+      let shown = 0;
+      for (const el of els) {
+        const match =
+          filter === '*' || (el.dataset.stack ?? '').split('|').includes(filter);
+        el.hidden = !match;
+        if (match) shown++;
+      }
+      return shown;
+    };
+
+    const apply = (filter: string) => {
+      emptyFeatured?.classList.toggle('hidden', applyTo(cards, filter) > 0);
+      emptyClient?.classList.toggle('hidden', applyTo(clientRows, filter) > 0);
+      emptyArchive?.classList.toggle('hidden', applyTo(rows, filter) > 0);
+
+      for (const btn of buttons) {
+        btn.setAttribute('aria-pressed', String(btn.dataset.filter === filter));
+      }
+
+      const url = new URL(window.location.href);
+      if (filter === '*') url.searchParams.delete('stack');
+      else url.searchParams.set('stack', filter);
+      history.replaceState(null, '', url);
+    };
+
+    for (const btn of buttons) {
+      btn.addEventListener('click', () => apply(btn.dataset.filter ?? '*'));
+    }
+
+    const initial = new URL(window.location.href).searchParams.get('stack');
+    if (initial && buttons.some((b) => b.dataset.filter === initial)) apply(initial);
+  }
+</script>
