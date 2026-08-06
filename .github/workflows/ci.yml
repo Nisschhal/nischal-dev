@@ -1,0 +1,63 @@
+# Pull-request checks.
+#
+# WHY: the guarantees this repo relies on are enforced at build time — the
+# content schema rejects malformed frontmatter, and it fails the build outright
+# if a `tier: client` entry declares `repo:` (decisions/0011). Until this
+# workflow existed, both were enforced only if a human remembered to run
+# `pnpm build` locally before merging.
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+# A force-push should not leave the previous run burning a runner.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build & checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Pinned to the floor declared in package.json `engines`, not to "latest
+      # 22". CI's job is to catch a syntax or API that the minimum supported
+      # Node cannot run — a newer runtime would hide exactly that.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+
+      # NOT `corepack enable`: the Corepack bundled with Node 22.12 ships stale
+      # signing keys and dies with "Cannot find matching keyid" when it tries to
+      # resolve pnpm. pnpm/action-setup installs pnpm directly and reads the
+      # version from package.json `packageManager`, so CI still resolves the
+      # same tree as a local install.
+      - uses: pnpm/action-setup@v4
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # The load-bearing step. Content schema violations — including a client
+      # entry that declares `repo:` — surface here as a non-zero exit.
+      - name: Build
+        run: pnpm build
+
+      # Second, independent guard: reads the built HTML and asserts no client
+      # project renders a link to source. The schema covers the data; this
+      # covers the templates and the data seam.
+      - name: Assert client source is not linked
+        run: pnpm check:client-privacy
+
+      # Report-only on purpose. A demo host returning 5xx, or being down for
+      # ten minutes, has nothing to do with the pull request under review;
+      # failing here would train everyone to ignore a red X (decisions/0011).
+      - name: Check demo links (report only)
+        continue-on-error: true
+        run: pnpm check:links
