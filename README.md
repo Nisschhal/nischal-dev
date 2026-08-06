@@ -7,12 +7,23 @@ Built in phases — Phase 1 (this) is static with no backend, and the seams for
 Phase 2's database and API are already in place. See
 [`decisions/0007-phase-boundaries.md`](decisions/0007-phase-boundaries.md).
 
+**New here?** Start with **[docs/GETTING-STARTED.md](docs/GETTING-STARTED.md)** —
+prerequisites, first run, and troubleshooting, assuming no Astro or Docker
+experience. Then **[docs/HOW-IT-WORKS.md](docs/HOW-IT-WORKS.md)** for the pipeline
+end to end and a glossary of the terms this project uses (*seam*, *tier*, *ADR*,
+*Phase 1/2*).
+
+- [`docs/`](docs/) — beginner guides
 - [`tasks.md`](tasks.md) — what's done, what's next
-- [`decisions/`](decisions/) — why each choice was made
+- [`decisions/`](decisions/) — why each choice was made ([index](decisions/README.md))
 
 ---
 
 ## Quick start
+
+Requires **Node 22.12+**, **pnpm** (`corepack enable`), and **Docker** for the
+container steps. Full setup in
+[docs/GETTING-STARTED.md](docs/GETTING-STARTED.md).
 
 ```bash
 pnpm install
@@ -44,7 +55,8 @@ docker compose up --build web
 | `pnpm dev` | Dev server with HMR |
 | `pnpm build` | Static build → `dist/` |
 | `pnpm preview` | Serve the built output locally |
-| `pnpm sync` | Refresh GitHub stats → `src/data/github-cache.json` |
+| `pnpm sync` | Refresh GitHub stats **and** the all-repos index |
+| `pnpm check:links` | Verify every live demo URL still resolves |
 | `pnpm docker:up` | `docker compose up --build` |
 | `pnpm docker:down` | Stop and remove containers |
 | `pnpm docker:logs` | Tail container logs |
@@ -63,14 +75,14 @@ Create `src/content/projects/my-project.md`:
 ```markdown
 ---
 title: My Project
-repo: Nisschhal/my-project          # optional
 summary: One or two sentences, in your own words.
 stack: [Next.js, TypeScript, Postgres]
-live: https://example.com           # optional
-featured: true                      # optional — shows on the homepage
-order: 1                            # lower sorts first
+tier: featured                      # featured | client | archive — see below
 year: 2026
 status: live                        # live | wip | archived
+repo: Nisschhal/my-project          # optional
+live: https://example.com           # optional
+featured: true                      # optional — pins it to the homepage
 highlights:                         # optional bullets
   - Something notable
 ---
@@ -82,6 +94,23 @@ Markdown body becomes the case study.
 
 The filename is the URL slug. The schema is enforced at build time — a missing or
 malformed field fails the build rather than rendering blank.
+
+**`tier` decides how much space the project gets**, and defaults to `archive`:
+
+| tier | Appears as | Own page? |
+|---|---|---|
+| `featured` | Card, top of `/projects` | Yes, if it has a body |
+| `client` | Its own "Client work" section | Yes, if it has a body |
+| `archive` | One dense row lower down | No |
+
+### Client work
+
+An entry with **no `repo:` field** renders a live link and no source link, and GitHub
+is never queried for it — that is how commissioned work is shown without exposing a
+client's private repository. On a `tier: client` entry the rule is enforced: declaring
+`repo:` **fails the build**. Template at
+`src/content/projects/_client-work-template.md.example`, reasoning in
+[`decisions/0011`](decisions/0011-client-work-and-full-repo-coverage.md).
 
 Then refresh the stats:
 
@@ -154,13 +183,26 @@ rule — accent green is for short strings only, body copy stays legible grey �
 
 ---
 
+## Quality tooling
+
+`pnpm check:links` requests every `live:` URL and separates *dead* from *unhealthy* —
+a `5xx` warns (the page may still render) while a `404` fails the run. Not part of
+`pnpm build`; builds stay offline-safe.
+
+`.claude/` ships a read-only code-review agent wired to a Stop hook. After an editing
+session it reviews changed files against this project's ADRs and writes findings to
+`.claude/reviews/`. See [`decisions/0009`](decisions/0009-automated-code-review.md).
+
+---
+
 ## Before this goes public
 
-Tracked in [`tasks.md`](tasks.md):
+Tracked in [`tasks.md`](tasks.md) — see there for the current list:
 
 - `P1-07` Replace the placeholder case-study sections in `src/content/projects/`
 - `P1-09` Fill in real bio, location, and CV timeline in `src/data/profile.ts`
   (currently marked `TODO:`)
 - `P1-22` Add `public/resume.pdf` and set `resumeAvailable: true`
 - `P1-24` Add screenshots to `public/covers/` and set `cover:` on projects
-- `P1-32` Add `NGROK_AUTHTOKEN` to `.env`
+- `P1-52` Make the `wellness-nepal` repo private on GitHub — the site link is already
+  removed, but only this hides the client's code
