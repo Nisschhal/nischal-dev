@@ -34,10 +34,12 @@ jobs:
         with:
           node-version: 22.12.0
 
-      # Corepack activates the pnpm version pinned in package.json
-      # `packageManager`, so CI resolves the same tree as a local install.
-      - name: Enable Corepack
-        run: corepack enable
+      # NOT `corepack enable`: the Corepack bundled with Node 22.12 ships stale
+      # signing keys and dies with "Cannot find matching keyid" when it tries to
+      # resolve pnpm. pnpm/action-setup installs pnpm directly and reads the
+      # version from package.json `packageManager`, so CI still resolves the
+      # same tree as a local install.
+      - uses: pnpm/action-setup@v4
 
       - name: Install
         run: pnpm install --frozen-lockfile
