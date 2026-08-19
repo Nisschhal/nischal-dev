@@ -1,7 +1,10 @@
 # Portfolio
 
-Personal portfolio site. Static Astro build, served by Nginx in Docker, exposed
-through an Ngrok tunnel.
+**Live:** <https://nischal-dev-eight.vercel.app>
+
+Personal portfolio site. Static Astro build, deployed on Vercel. The same output
+also runs locally as an Nginx container, optionally exposed through an Ngrok
+tunnel — see [Run the container](#run-the-container).
 
 Built in phases — Phase 1 (this) is static with no backend, and the seams for
 Phase 2's database and API are already in place. See
@@ -38,6 +41,7 @@ rate-limited.
 | **Container** | Multi-stage Docker: `node:24-alpine` builds, `nginx:1.27-alpine` serves. No Node in the runtime image |
 | **Serving** | Nginx with gzip, immutable caching for content-hashed assets, and a CSP plus four hardening headers |
 | **Tunnel** | Ngrok in Compose, targeting the internal network rather than the published port |
+| **Hosting** | Vercel, building straight from the repository — no adapter, since the output is already static |
 | **CI** | GitHub Actions — build, client-privacy assertion, and a report-only link check on every PR |
 
 ## Engineering decisions worth reading
