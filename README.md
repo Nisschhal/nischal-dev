@@ -12,6 +12,98 @@ Phase 2's database and API are already in place. See
 
 ---
 
+## What it is
+
+A terminal-styled portfolio that ships as pure static HTML — no client-side
+framework, no runtime JavaScript for content, no backend. Every page is rendered
+at build time and served as files.
+
+The interesting part isn't the pages, it's the constraints enforced around them.
+Project data flows through a single module so the storage layer can be swapped
+without touching a component. Client work is prevented from leaking a repository
+URL by the build itself rather than by a template convention. The GitHub stats
+shown on cards are a committed file, so a deploy can't fail because an API is
+rate-limited.
+
+## Stack
+
+| Concern | Choices |
+|---|---|
+| **Framework** | Astro 7 (`output: 'static'`), TypeScript |
+| **Styling** | Tailwind CSS 4 via `@tailwindcss/vite`, one `@theme` token block, JetBrains Mono |
+| **Content** | Astro content collections, glob loader, Zod schema validation |
+| **Data** | Committed JSON cache generated from the GitHub REST API |
+| **Build / tooling** | pnpm 11, Node 22.13, Vite, `@astrojs/sitemap` |
+| **Scripts** | Node native TypeScript (`--experimental-strip-types`) — no build step, no ts-node |
+| **Container** | Multi-stage Docker: `node:24-alpine` builds, `nginx:1.27-alpine` serves. No Node in the runtime image |
+| **Serving** | Nginx with gzip, immutable caching for content-hashed assets, and a CSP plus four hardening headers |
+| **Tunnel** | Ngrok in Compose, targeting the internal network rather than the published port |
+| **CI** | GitHub Actions — build, client-privacy assertion, and a report-only link check on every PR |
+
+## Engineering decisions worth reading
+
+Each of these is written up in [`decisions/`](decisions/) with the reasoning and
+the alternatives that were rejected.
+
+- **A single data seam** ([`0008`](decisions/0008-data-access-seam.md)) — `src/lib/projects.ts`
+  is the only module that knows where project data lives. Pages never import
+  `astro:content`. Phase 2 swaps four function bodies for Postgres queries and
+  every caller keeps working. All functions are already `async` because a database
+  call can't be synchronous and sync→async is a breaking change everywhere.
+- **Confidentiality enforced at build time** ([`0011`](decisions/0011-client-work-and-full-repo-coverage.md)) —
+  a `tier: client` entry that declares `repo:` fails the build. Rendering already
+  omits the link, but rendering is a convention someone can refactor away by
+  accident. A second, independent check reads the built HTML in CI and asserts no
+  client page links to source. The cost of getting this wrong is publishing a
+  client's private repository, so it is enforced twice.
+- **Builds never touch the network** ([`0003`](decisions/0003-committed-github-cache.md)) —
+  GitHub stats are refreshed by an explicit `pnpm sync` and committed. A rate limit
+  or an outage cannot fail a deploy.
+- **Curated projects, not an API listing** ([`0002`](decisions/0002-curated-project-manifest.md)) —
+  of 146 public repos, only 32 have a description and none have topics. An automatic
+  listing would be worse than useless, so entries are hand-written.
+- **Phase boundaries drawn up front** ([`0007`](decisions/0007-phase-boundaries.md)) —
+  the static build is Phase 1, and the exact three-line change that turns it into a
+  server render is documented in `astro.config.mjs` rather than discovered later.
+
+## Built with Claude Code
+
+This site was built end to end with **Claude Code**, and a second goal ran
+alongside the first: learning the agent harness itself — hooks, subagents, skills,
+and MCP servers — by using each one for a real job in a real repository rather
+than in a tutorial.
+
+The point is that the agent configuration is **version-controlled and constrained**,
+not ad-hoc prompting. Everything below lives in the repo and is reviewable:
+
+- **Context, not vibes.** `AGENTS.md` (with `CLAUDE.md` symlinked to it) carries the
+  project instructions, and [`decisions/`](decisions/) records eleven ADRs. Changes
+  get reviewed against this repository's own recorded decisions rather than generic
+  style rules.
+- **A `Stop` hook that reviews every turn** ([`0009`](decisions/0009-automated-code-review.md)) —
+  `.claude/hooks/review-changes.sh` fires after each turn and spawns a project-local
+  `code-reviewer` subagent. The reasoning behind it is the useful part: instructions
+  in `CLAUDE.md` are *advisory* and get followed only when the model happens to,
+  while a hook is executed unconditionally by the harness. It runs at end-of-turn
+  rather than per-edit, because reviewing after every `Edit` inspects half-finished
+  work and reports things like "unused import" when the usage simply isn't written
+  yet.
+- **Subagents with deliberately narrow tools.** The reviewer is granted
+  `Read, Grep, Glob` and nothing else — a reviewer that can edit is a reviewer that
+  can break the build unattended. A second agent, `issue-solver`, takes a GitHub
+  issue to an open pull request on its own branch and never pushes to `main`.
+- **Skills, pinned by hash.** The `github-issues` skill is vendored under
+  `.agents/skills/` and locked in `skills-lock.json` by content hash, so a skill
+  pulled from an upstream repository can't change underneath the project silently.
+- **MCP servers** provide the GitHub integration the skill and the issue-solver
+  agent operate through.
+- **Non-blocking by design.** The review hook is `async` with `asyncRewake`, so a
+  turn never waits on it and findings surface back into context instead of being
+  buried in a log nobody opens. A false positive costs one message, not a stalled
+  session.
+
+---
+
 ## Quick start
 
 ```bash
