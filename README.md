@@ -183,6 +183,7 @@ repo: Nisschhal/my-project          # optional
 summary: One or two sentences, in your own words.
 stack: [Next.js, TypeScript, Postgres]
 live: https://example.com           # optional
+tier: featured                      # featured | client | archive (default archive)
 featured: true                      # optional — shows on the homepage
 order: 1                            # lower sorts first
 year: 2026
@@ -198,6 +199,11 @@ Markdown body becomes the case study.
 
 The filename is the URL slug. The schema is enforced at build time — a missing or
 malformed field fails the build rather than rendering blank.
+
+`tier` decides where the entry appears: `featured` gets a card and a case-study
+page, `client` gets its own section with a live link and **never** a source link,
+`archive` gets a single row in the index. A non-empty Markdown body is what earns
+the case-study page — an entry without one falls back to a row.
 
 Then refresh the stats:
 
