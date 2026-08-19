@@ -133,6 +133,26 @@ docker compose up --build web
 
 ---
 
+## Deploy
+
+Vercel builds directly from the repository. Because `output` is already `'static'`
+and every route is prerendered, there is no adapter and no `vercel.json` — Vercel
+detects Astro, runs `pnpm build`, and serves `dist/`. The Docker and Nginx setup is
+ignored entirely; it exists for local and self-hosted runs.
+
+The build needs **no secrets**. `pnpm sync` is the only thing that reads
+`GITHUB_TOKEN`, and it never runs during a build.
+
+One environment variable is worth setting:
+
+| Variable | Why |
+|---|---|
+| `PUBLIC_SITE_URL` | Absolute URLs for `sitemap-index.xml`, `<link rel="canonical">`, and OG tags. Without it these fall back to `https://nischal.dev`, which points at a domain that isn't live yet — the site renders fine, but search engines and link previews are sent somewhere wrong. |
+
+Set the project's Node version to 22.x to satisfy the `engines` floor.
+
+---
+
 ## Commands
 
 | Command | What it does |
