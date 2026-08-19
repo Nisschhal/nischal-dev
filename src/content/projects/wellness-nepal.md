@@ -9,7 +9,7 @@ summary: A B2B commercial gym equipment manufacturer's catalogue and quote platf
 stack: [Next.js, TypeScript, LangGraph, LangChain, Vercel AI SDK, Google Gemini, Groq, Framer Motion, Tailwind CSS]
 live: https://www.wnwellnessequipment.com
 tier: client
-featured: true
+featured: false
 order: 2
 year: 2026
 status: live

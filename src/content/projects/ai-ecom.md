@@ -4,7 +4,8 @@ repo: Nisschhal/ai-e-com
 summary: An e-commerce storefront with an AI shopping assistant, built on Sanity as a headless CMS with Clerk-managed authentication.
 stack: [Next.js, TypeScript, Sanity CMS, Clerk, Vercel AI SDK, Google Gemini, Radix UI, Tailwind CSS]
 live: https://ai-e-com.vercel.app
-order: 7
+featured: true
+order: 5
 tier: featured
 year: 2026
 status: live

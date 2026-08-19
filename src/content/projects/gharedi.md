@@ -4,7 +4,8 @@ repo: Nisschhal/real-state-gharedi
 summary: A real-estate listings platform with interactive map search, drag-and-drop listing management, and content managed through Sanity CMS.
 stack: [Next.js, TypeScript, Sanity CMS, Clerk, MapLibre GL, Leaflet, Tailwind CSS]
 live: https://real-state-gharedi.vercel.app
-order: 6
+featured: true
+order: 4
 tier: featured
 year: 2026
 status: live
