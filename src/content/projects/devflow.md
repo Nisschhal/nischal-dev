@@ -5,7 +5,7 @@ summary: A Stack Overflow-style Q&A community for developers — ask and answer 
 stack: [Next.js, TypeScript, MongoDB, Mongoose, Auth.js, Vercel AI SDK, Tailwind CSS, shadcn/ui, Zod]
 live: https://devflow-five-alpha.vercel.app
 featured: true
-order: 3
+order: 2
 tier: featured
 year: 2026
 status: live

@@ -5,7 +5,7 @@ summary: A real-estate listings platform with interactive map search, drag-and-d
 stack: [Next.js, TypeScript, Sanity CMS, Clerk, MapLibre GL, Leaflet, Tailwind CSS]
 live: https://real-state-gharedi.vercel.app
 featured: true
-order: 4
+order: 3
 tier: featured
 year: 2026
 status: live

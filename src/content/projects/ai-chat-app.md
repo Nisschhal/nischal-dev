@@ -8,7 +8,7 @@ summary: A real-time chat application with streaming AI responses, rendering mar
 stack: [React, Vite, TypeScript, Vercel AI SDK, Socket.IO, Streamdown, Tailwind CSS, shadcn/ui]
 featured: false
 order: 4
-tier: featured
+tier: archive
 year: 2026
 status: live
 highlights:

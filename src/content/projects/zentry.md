@@ -4,7 +4,8 @@ repo: Nisschhal/zentry-game
 summary: An award-style gaming landing page with video-masked transitions, scroll-pinned sections, and GSAP-driven 3D card tilts.
 stack: [React, Vite, GSAP, Tailwind CSS]
 live: https://zentry-game-three.vercel.app
-order: 9
+featured: true
+order: 5
 tier: featured
 year: 2025
 status: live

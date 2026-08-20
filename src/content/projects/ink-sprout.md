@@ -7,7 +7,7 @@ stack: [Next.js, TypeScript, Drizzle ORM, Neon Postgres, Auth.js, Stripe, Tailwi
 # The 500 carries `noindex`, so fixing the underlying server error is worthwhile.
 live: https://ink-sprout-v2-nischal.vercel.app
 featured: true
-order: 1
+order: 6
 tier: featured
 year: 2026
 status: live
