@@ -199,12 +199,22 @@ export const profile = {
       to: '2023',
       points: [],
     },
+    {
+      qualification: 'A-Level (Science)',
+      org: 'Chelsea International Academy',
+      from: '2016',
+      to: '2018',
+      points: [],
+    },
   ],
 
   /** Served from /public. Until you add the file, the CV page shows a disabled
    *  button instead of a broken download link. See P1-22. */
   resumePath: '/resume.pdf',
-  resumeAvailable: false,
+  /** Filename the browser saves as — `download` on a bare path would otherwise
+   *  drop an anonymous "resume.pdf" into the reader's downloads folder. */
+  resumeFilename: 'Nischal_Puri_FullStack_Resume.pdf',
+  resumeAvailable: true,
 } as const;
 
 export type Profile = typeof profile;

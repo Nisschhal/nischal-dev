@@ -21,7 +21,8 @@ const fmt = (d: string) =>
         profile.resumeAvailable ? (
           <a
             href={profile.resumePath}
-            download
+            download={profile.resumeFilename}
+            type="application/pdf"
             class="no-underline border border-accent text-accent px-4 py-2 text-sm hover:bg-accent hover:text-bg transition-colors"
           >
             download pdf ↓
