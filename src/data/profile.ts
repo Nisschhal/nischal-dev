@@ -213,7 +213,7 @@ export const profile = {
   resumePath: '/resume.pdf',
   /** Filename the browser saves as — `download` on a bare path would otherwise
    *  drop an anonymous "resume.pdf" into the reader's downloads folder. */
-  resumeFilename: 'Nischal_Puri_FullStack_Resume.pdf',
+  resumeFilename: 'Nischal Puri Resume.pdf',
   resumeAvailable: true,
 } as const;
 
