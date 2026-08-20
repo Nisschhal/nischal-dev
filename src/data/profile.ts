@@ -208,11 +208,19 @@ export const profile = {
     },
   ],
 
-  /** Served from /public. Until you add the file, the CV page shows a disabled
-   *  button instead of a broken download link. See P1-22. */
-  resumePath: '/resume.pdf',
-  /** Filename the browser saves as — `download` on a bare path would otherwise
-   *  drop an anonymous "resume.pdf" into the reader's downloads folder. */
+  /**
+   * Served from /public. Until you add the file, the CV page shows a disabled
+   * button instead of a broken download link. See P1-22.
+   *
+   * The file is named for the reader's downloads folder, not for the URL, and
+   * that is deliberate: hosts derive `Content-Disposition: filename=` from the
+   * file on disk, and that header BEATS the `download` attribute in Chrome. The
+   * file was `resume.pdf` once and saved as an anonymous "resume" no matter what
+   * the anchor asked for. Rename the file to rename the download.
+   */
+  resumePath: '/Nischal%20Puri%20Resume.pdf',
+  /** Fallback for hosts that send no Content-Disposition at all. Keep in sync
+   *  with the filename in /public. */
   resumeFilename: 'Nischal Puri Resume.pdf',
   resumeAvailable: true,
 } as const;
