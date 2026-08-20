@@ -121,6 +121,19 @@
     }
   }
 
+  /* Inline emphasis produced by `lib/emphasis.ts` from *asterisks* in prose.
+     Global rather than component-scoped because the same markup renders both in
+     the plain lead paragraphs and inside the scroll reveal.
+
+     `color: inherit` is required, not stylistic: on /about these sit inside a
+     `background-clip: text` reveal, and any element that sets its own colour
+     paints over the clipped background — a coloured <strong> would stay lit
+     inside the ghosted region. Weight is the axis that survives it. */
+  .em {
+    font-weight: 700;
+    color: inherit;
+  }
+
   .prose-terminal {
     max-width: var(--container-measure);
   }

@@ -3,7 +3,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PromptHeading from '../components/PromptHeading.astro';
 import SkillsGrid from '../components/SkillsGrid.astro';
 import ContactBlock from '../components/ContactBlock.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+import { emphasize } from '../lib/emphasis';
 import { profile } from '../data/profile';
+
+/** Paragraphs rendered plain, before the scroll reveal takes over. These are
+ *  above the fold on load, where there is no scroll left to drive the reveal —
+ *  they would simply sit ghosted. */
+const LEAD_PARAGRAPHS = 2;
 ---
 
 <BaseLayout title="About" description={profile.tagline}>
@@ -11,7 +18,18 @@ import { profile } from '../data/profile';
     <PromptHeading command="cat about.md" label="About" as="h1" />
 
     <div class="prose-terminal text-text mb-4">
-      {profile.bio.map((para) => <p class="m-0 mb-4 last:mb-0">{para}</p>)}
+      {/*
+        The opening paragraphs are above the fold on load, so they get no scroll
+        treatment — there is no scroll left to drive it, and they would simply sit
+        dimmed. The reveal starts once the reader is actually scrolling.
+      */}
+      {
+        profile.bio
+          .slice(0, LEAD_PARAGRAPHS)
+          .map((para) => <p class="m-0 mb-4" set:html={emphasize(para)} />)
+      }
+
+      <ScrollReveal paragraphs={profile.bio.slice(LEAD_PARAGRAPHS)} />
     </div>
 
     <dl class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm mt-10 mb-4">

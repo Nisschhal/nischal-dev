@@ -1,5 +1,6 @@
 ---
 import { profile } from '../data/profile';
+import { getAllRepos, getProjects } from '../lib/projects';
 
 /**
  * The typed line is present in the DOM in full from the start — the animation
@@ -7,6 +8,12 @@ import { profile } from '../data/profile';
  * screen readers, and instant under `prefers-reduced-motion`.
  * See decisions/0006-terminal-design-system.md.
  */
+
+// Counted at build time rather than written into the copy, so the claim in the
+// footnote below can't drift from what the site actually indexes.
+// Data comes from the seam only — see decisions/0008-data-access-seam.md.
+const repoCount = (await getAllRepos()).length;
+const writeUpCount = (await getProjects()).length;
 ---
 
 <section class="pt-16 sm:pt-24 pb-14">
@@ -36,9 +43,7 @@ import { profile } from '../data/profile';
     )
   }
 
-  <div class="prose-terminal text-text">
-    {profile.bio.map((para) => <p class="m-0 mb-3 last:mb-0">{para}</p>)}
-  </div>
+  <p class="prose-terminal text-text m-0 max-w-[62ch]">{profile.hook}</p>
 
   <div class="mt-9 flex flex-wrap gap-3 text-sm">
     <a
@@ -48,12 +53,31 @@ import { profile } from '../data/profile';
       view projects →
     </a>
     <a
+      href={profile.portfolioUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="no-underline border border-border text-text px-4 py-2 hover:border-border-hi hover:bg-surface transition-colors"
+    >
+      designed portfolio ↗
+    </a>
+    <a
       href={`mailto:${profile.email}`}
       class="no-underline border border-border text-text px-4 py-2 hover:border-border-hi hover:bg-surface transition-colors"
     >
       get in touch
     </a>
   </div>
+
+  <p class="text-dim text-xs m-0 mt-6 max-w-[68ch]">
+    <span class="text-accent">#</span> the workshop: {repoCount} repos, {`${writeUpCount} written up.`}{' '}
+    <a
+      href={profile.portfolioUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-dim hover:text-accent underline underline-offset-2 transition-colors"
+      >nischaldev.vercel.app</a
+    > is the showroom.
+  </p>
 </section>
 
 <style>
