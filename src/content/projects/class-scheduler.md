@@ -7,9 +7,9 @@ extraRepos:
 summary: A full-stack calendar application for managing one-off events and complex recurring class series, with day, week, and list views.
 stack: [React 19, Vite 7, TypeScript, FullCalendar, Node.js, Tailwind CSS, Radix UI, Axios]
 live: https://class-scheduler-front.vercel.app
-featured: true
+featured: false
 order: 3
-tier: featured
+tier: archive
 year: 2026
 status: live
 highlights:

@@ -6,7 +6,7 @@ extraRepos:
     repo: Nisschhal/ai-chat-app-backend
 summary: A real-time chat application with streaming AI responses, rendering markdown, code, math, and Mermaid diagrams inline as tokens arrive.
 stack: [React, Vite, TypeScript, Vercel AI SDK, Socket.IO, Streamdown, Tailwind CSS, shadcn/ui]
-featured: true
+featured: false
 order: 4
 tier: featured
 year: 2026

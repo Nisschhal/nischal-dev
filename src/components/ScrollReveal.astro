@@ -1,0 +1,148 @@
+---
+/**
+ * Scroll reveal across a block of prose, in pure CSS.
+ *
+ * The site is `output: 'static'` with no client framework and no runtime JS for
+ * content (decisions/0001-astro-static-first.md), and the Nginx CSP blocks
+ * external origins — so the React + `motion/react` approach this effect usually
+ * uses isn't available. CSS scroll-driven animations do it with zero JavaScript.
+ *
+ * ── How the reveal tracks reading order ──────────────────────────────────────
+ *
+ * Each paragraph's text sits in a `display: inline` span with a solid
+ * `background-image` clipped to the glyphs, grown from `background-size: 0%` to
+ * `100%`. The span is `inline`, NOT `inline-block`, and that is load-bearing:
+ * under the default `box-decoration-break: slice`, a fragmented inline box is
+ * painted as though it were one unbroken run and the result is then sliced
+ * across line boxes. So the background sweeps through the text in reading
+ * order — finishing line one before starting line two — instead of advancing
+ * every line in parallel the way a gradient on a block element would.
+ *
+ * (Verified in Chrome by freezing `background-size: 35%`: line one fully
+ * painted, line two painted to roughly a third and ghosting mid-line, the rest
+ * untouched.)
+ *
+ * ── Why the range is in `vh`, not percentages ────────────────────────────────
+ *
+ * The obvious approach — one timeline on the container, each paragraph taking a
+ * percentage slice — reveals text far too early. A percentage of `cover` starts
+ * counting the moment the block's top edge enters from the bottom of the
+ * viewport, so by the time the reader has actually scrolled to the block, the
+ * sweep is already several paragraphs ahead of them.
+ *
+ * Instead each paragraph carries its own timeline and the range is expressed in
+ * `vh`, which pins the reveal front to a fixed reading line on screen:
+ *
+ *   start  `calc(100vh - var(--read-line))`  paragraph's TOP hits the line
+ *   end    `calc(100% - var(--read-line))`   paragraph's BOTTOM hits the line
+ *
+ * The two are exactly the paragraph's own height apart regardless of how tall it
+ * is, so short and long paragraphs sweep at the same reading pace. And because
+ * every paragraph is keyed to the same absolute screen position, the front runs
+ * continuously down the whole passage rather than restarting per paragraph.
+ *
+ * ── Degradation, in order of importance ──────────────────────────────────────
+ *
+ *   1. Every word is plain text in the DOM. Crawlers and screen readers get the
+ *      full passage regardless of support, which is why this is safe to use on
+ *      the bio rather than only on decoration.
+ *   2. No `animation-timeline` support → the `@supports` block never applies,
+ *      `background-clip` is never set, and the text renders at full
+ *      `--color-text`. Nothing is hidden or faded.
+ *   3. `prefers-reduced-motion: reduce` → same. Fully rendered, static.
+ */
+interface Props {
+  /** Paragraphs to reveal, in order. */
+  paragraphs: readonly string[];
+  /** Extra classes for the wrapping block. */
+  class?: string;
+}
+
+import { emphasize } from '../lib/emphasis';
+
+const { paragraphs, class: className } = Astro.props;
+
+/**
+ * Declared inline rather than in the scoped <style> below, because the build
+ * pipeline drops `view-timeline-name` from the stylesheet — the rule ships in
+ * the CSS text but never reaches the element, leaving every animation pointing
+ * at a timeline that doesn't exist (measured: `viewTimelineName` computes to
+ * `none`, and the reveal never runs). Inline styles are left alone.
+ *
+ * Safe to sit outside the `@supports` guard: a browser without scroll-timeline
+ * support ignores the declaration entirely, and under reduced motion the
+ * timeline merely exists unused, because `animation-name` is still guarded.
+ */
+const PARA_STYLE = 'view-timeline-name:--para;view-timeline-axis:block';
+---
+
+<div class:list={['reveal-block', className]}>
+  {
+    paragraphs.map((para) => (
+      <p class="reveal-para m-0 mb-4 last:mb-0" style={PARA_STYLE}>
+        <span class="reveal-run" style="--tl:--para" set:html={emphasize(para)} />
+      </p>
+    ))
+  }
+</div>
+
+<style>
+  /* Baseline: ordinary paragraphs. Everything below is enhancement. */
+  .reveal-run {
+    display: inline;
+    color: var(--color-text);
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal-para {
+        view-timeline-name: --para;
+        view-timeline-axis: block;
+      }
+
+      .reveal-run {
+        /* The ghost ahead of the reveal front — enough to show the shape of
+           what's coming without being readable ahead of time. */
+        color: color-mix(in srgb, var(--color-text) 14%, transparent);
+        background-image: linear-gradient(
+          90deg,
+          var(--color-text),
+          var(--color-text)
+        );
+        background-repeat: no-repeat;
+        background-size: 0% 100%;
+        background-clip: text;
+        -webkit-background-clip: text;
+
+        /* Longhands, and the timeline behind a var(), on purpose.
+           Lightning CSS folds an adjacent `animation-timeline` into the
+           `animation` shorthand — producing `animation: linear both
+           scroll-reveal --para`, which is invalid (the timeline was dropped from
+           that shorthand) and makes Chrome discard the whole declaration. The
+           indirection keeps it from being merged. */
+        animation-name: scroll-reveal;
+        animation-duration: auto;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: var(--tl);
+        /* The reading line is 55vh from the top of the viewport: text is ghosted
+           until it rises to there, and lit above it. Start is where the
+           paragraph's TOP reaches the line (100vh - 55vh), end is where its
+           BOTTOM does — exactly the paragraph's own height apart, so short and
+           long paragraphs sweep at the same reading pace.
+
+           Written out literally rather than via a `--read-line` custom property:
+           `calc()` around a `var()` here is invalid at computed-value time and
+           silently falls back to `normal`, which puts the range back to the full
+           cover span and reveals the text long before the reader reaches it. */
+        animation-range: cover 45vh cover calc(100% - 55vh);
+      }
+
+      @keyframes scroll-reveal {
+        to {
+          background-size: 100% 100%;
+        }
+      }
+    }
+  }
+</style>

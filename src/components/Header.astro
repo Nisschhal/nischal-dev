@@ -47,6 +47,19 @@ const isActive = (href: string) =>
             </li>
           ))
         }
+
+        {/* Outbound, so it gets a rule and an arrow rather than sitting in the
+            internal nav rhythm — leaving the site should look like leaving. */}
+        <li class="border-l border-border pl-4 sm:pl-6">
+          <a
+            href={profile.portfolioUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="no-underline text-dim hover:text-accent transition-colors whitespace-nowrap"
+          >
+            portfolio <span aria-hidden="true">↗</span>
+          </a>
+        </li>
       </ul>
     </nav>
   </div>

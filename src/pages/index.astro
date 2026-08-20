@@ -9,7 +9,7 @@ import { getHomepageProjects, getProjects } from '../lib/projects';
 
 // Data comes from the seam only — never `astro:content` directly.
 // See decisions/0008-data-access-seam.md.
-const featured = await getHomepageProjects(4);
+const featured = await getHomepageProjects(6);
 const total = (await getProjects()).length;
 ---
 
